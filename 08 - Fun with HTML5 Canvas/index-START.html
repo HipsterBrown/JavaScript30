@@ -3,17 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <title>HTML5 Canvas</title>
+
+  <style>
+    html, body {
+      margin:0;
+    }
+  </style>
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
+
 <script>
-</script>
+  const canvas = document.querySelector('#draw');
+  const context = canvas.getContext('2d');
 
-<style>
-  html, body {
-    margin:0;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+
+  context.strokeStyle = '#bada55';
+  context.lineJoin = 'round';
+  context.lineCap = 'round';
+  context.lineWidth = 2;
+
+  const state = {
+    hue: 0,
+    isDrawing: false,
+    lastX: 0,
+    lastY: 0,
+    lineWidth: 2,
+  };
+
+  function draw ({ offsetX, offsetY }) {
+    if (!state.isDrawing) return;
+    context.strokeStyle = `hsl(${state.hue}, 100%, 50%)`;
+    context.beginPath();
+    context.moveTo(state.lastX, state.lastY);
+    context.lineWidth = state.lineWidth;
+    context.lineTo(offsetX, offsetY);
+    context.stroke();
+
+    Object.assign(state, {
+      hue: state.hue <= 360 ? state.hue + 5 : 0,
+      lastX: offsetX,
+      lastY: offsetY,
+      lineWidth: state.lineWidth <= 50 ? state.lineWidth + 2 : state.lineWidth,
+    });
   }
-</style>
 
+  canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('mousedown', ({ offsetX, offsetY }) => { 
+    Object.assign(state, {
+      isDrawing: true,
+      lastX: offsetX,
+      lastY: offsetY,
+    });
+  });
+  canvas.addEventListener('mouseup', resetState);
+  canvas.addEventListener('mouseout', resetState);
+
+  function resetState () {
+    Object.assign(state, {
+      isDrawing: false,
+      lineWidth: 2,
+    });
+  }
+</script>
 </body>
 </html>
