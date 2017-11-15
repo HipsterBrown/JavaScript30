@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Scoped CSS Variables and JS</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
@@ -18,34 +19,24 @@
     <input id="base" type="color" name="base" value="#ffc600">
   </div>
 
-  <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
-
-  <style>
-
-    /*
-      misc styles, nothing to do with CSS variables
-    */
-
-    body {
-      text-align: center;
-      background: #193549;
-      color: white;
-      font-family: 'helvetica neue', sans-serif;
-      font-weight: 100;
-      font-size: 50px;
-    }
-
-    .controls {
-      margin-bottom: 50px;
-    }
-
-    input {
-      width:100px;
-    }
-  </style>
+  <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500" alt="unsplash photo">
 
   <script>
-  </script>
+     document.querySelectorAll('input').forEach(addListener);
 
+     function addListener (input) {
+       input.addEventListener('change', updateVariable);
+       input.addEventListener('mousemove', updateVariable);
+     }
+
+     function updateVariable ({ target }) {
+       const { name, value } = target;
+       const { sizing } = target.dataset;
+
+       window.requestAnimationFrame(function () {
+         document.body.style.setProperty(`--input-${name}`, !!sizing ? value + sizing : value);
+       });
+     }
+  </script>
 </body>
 </html>
