@@ -14,9 +14,55 @@
       <li>or a state</li>
     </ul>
   </form>
-<script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  <script>
+    const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+    const form = document.forms.item(0);
+    const suggestionList = document.querySelector('.suggestions');
 
-</script>
+    fetch(endpoint)
+    .then(response => response.json())
+    .then((cities) => {
+      form.addEventListener('input', updateSuggestions);
+
+      function updateSuggestions ({ target: { value } }) {
+        if (value.trim().length > 0) {
+          const suggestions = cities
+          .filter(({ city, state }) => city.toLowerCase().includes(value.toLowerCase()) || state.toLowerCase().includes(value.toLowerCase()))
+          .map(({ city, state, population }) => {
+            city = highlightValue(city, value);
+            state = highlightValue(state, value);
+
+            return `
+              <li>
+                <span className="name">${city}, ${state}</span>
+                <span className="population">${format(population)}</span>
+              </li>
+            `;
+          }).join('');
+
+          requestAnimationFrame(() => {
+            suggestionList.innerHTML = suggestions;
+          });
+        } else {
+          requestAnimationFrame(() => {
+            suggestionList.innerHTML = '';
+          });
+        }
+      }
+
+      function highlightValue (string, value) {
+        const matcher = new RegExp(value, 'gi');
+
+        return string.replace(matcher, `<span class="hl">${value}</span>`);
+      }
+
+      function format (number) {
+        const string = String(number).split('');
+        string.splice(-3, 0, ',');
+        return string.join('');
+      }
+    })
+    .catch(console.error);
+  </script>
   </body>
 </html>
