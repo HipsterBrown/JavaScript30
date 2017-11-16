@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Hold Shift to Check Multiple Checkboxes</title>
-</head>
-<body>
+</head> <body>
   <style>
 
     html {
@@ -99,6 +98,44 @@
   </div>
 
 <script>
+  const boxes = Array.from(document.querySelectorAll('input[type="checkbox"]'));
+  const shiftKey = 16;
+  const state = {
+    startIndex: null,
+    shiftOn: false,
+  };
+
+  window.addEventListener('keydown', ({ keyCode }) => {
+    if (keyCode === shiftKey) {
+      state.shiftOn = true;
+    }
+  });
+
+  window.addEventListener('keyup', ({ keyCode }) => {
+    if (keyCode === shiftKey) {
+      state.shiftOn = false;
+    }
+  });
+
+  boxes.forEach((box, index) => {
+    box.addEventListener('change', function () {
+      handleCheck.call(this, index)
+    });
+  });
+
+  function handleCheck (index) {
+    if (this.checked) {
+      if (state.startIndex !== null && state.shiftOn) {
+        const start = state.startIndex < index ? state.startIndex + 1 : index + 1;
+        const end = state.startIndex < index ? index : state.startIndex;
+        boxes
+        .slice(start, end)
+        .forEach(box => { box.checked = true; });
+      } else {
+        state.startIndex = index;
+      }
+    }
+  }
 </script>
 </body>
 </html>
