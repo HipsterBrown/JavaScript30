@@ -98,10 +98,10 @@ body {
 }
 
 .progress__filled {
-  width:50%;
-  background:#ffc600;
+  width: 0%;
+  background: #0000ff;
   flex:0;
-  flex-basis:50%;
+  flex-basis: 0%;
 }
 
 /* unholy css to style input type="range" */
@@ -128,7 +128,7 @@ input[type=range]::-webkit-slider-thumb {
   height: 15px;
   width: 15px;
   border-radius: 50px;
-  background: #ffc600;
+  background: #0000ff;
   cursor: pointer;
   -webkit-appearance: none;
   margin-top: -3.5px;
