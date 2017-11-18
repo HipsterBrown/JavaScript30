@@ -58,6 +58,29 @@
       };
     }
 
+    const windowHeight = window.innerHeight;
+    const images = Array.from(document.querySelectorAll('.slide-in'));
+
+    window.addEventListener('scroll', debounce(handleScroll));
+
+    function handleScroll () {
+      const { scrollY } = window;
+      const inView = (windowHeight * 0.80) + scrollY;
+      const scrolledOut = windowHeight + scrollY;
+
+      images
+      .forEach((image) => {
+        const { bottom, top, y } = image.getBoundingClientRect();
+
+        if ((y + scrollY) < inView && !image.classList.contains('active')) {
+          image.classList.add('active');
+        }
+
+        if ((bottom + y) < 0 || top > scrolledOut) {
+          image.classList.remove('active');
+        }
+      });
+    }
   </script>
 
   <style>
