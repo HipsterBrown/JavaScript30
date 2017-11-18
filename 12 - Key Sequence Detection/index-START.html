@@ -3,10 +3,45 @@
 <head>
   <meta charset="UTF-8">
   <title>Key Detection</title>
-  <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>
+  <!-- <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script> -->
 </head>
 <body>
-<script>
-</script>
+  <script>
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    const sequence = [];
+    let timeoutID = null;
+    window.addEventListener('keyup', handleKey);
+
+    function handleKey ({ key }) {
+      if (timeoutID) window.clearTimeout(timeoutID);
+
+      timeoutID = window.setTimeout(() => {
+        console.log('Took too long. Clearing sequence');
+        sequence.length = 0;
+      }, 5000);
+
+      if (sequence.length === 0 && key === 'ArrowUp') {
+        sequence.push(key);
+      } else if (sequence.length > 0) {
+        if (sequence.length < konamiCode.length) {
+          sequence.push(key);
+        }
+
+        if (sequence.length === konamiCode) {
+          if (match(konamiCode, sequence)) {
+            console.log('KONAMI!!!!!!!!!!!');
+          } else {
+            console.log('Failed. Starting over');
+          }
+          window.clearTimeout(timeoutID);
+          sequence.length = 0;
+        }
+      }
+    }
+
+    function match (comp1, comp2) {
+      return comp1.join('') === comp2.join('');
+    }
+  </script>
 </body>
 </html>
